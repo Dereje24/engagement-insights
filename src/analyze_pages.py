@@ -7,18 +7,18 @@ def main():
     # Example pages to analyze
     pages_data = [
         {
-            'url': 'https://example.com/page1',
-            'engagement': 0.85,  # engagement metric (e.g., conversion rate)
+            'url': 'https://www.lovesac.com/sacs',
+            'engagement': 0.55,  # engagement metric (e.g., conversion rate)
             'content': None
         },
         {
-            'url': 'https://example.com/page2',
-            'engagement': 0.45,
+            'url': 'https://www.lovesac.com/sactionals',
+            'engagement': 0.47,
             'content': None
         },
         {
-            'url': 'https://example.com/page3',
-            'engagement': 0.92,
+            'url': 'https://www.lovesac.com/learn-about-sactionals',
+            'engagement': 0.15,
             'content': None
         }
     ]

@@ -13,7 +13,7 @@ class LandingPageAnalyzer:
         """Initialize the analyzer with OpenAI API key."""
         load_dotenv()
         self.api_key = api_key or os.getenv('OPENAI_API_KEY')
-        self.client = OpenAI(api_key=self.api_key)
+        self.client = OpenAI(api_key=self.api_key, base_url="https://api.openai.com/v1")
         
     def fetch_page_content(self, url):
         """Fetch and parse landing page content."""
@@ -87,13 +87,24 @@ class LandingPageAnalyzer:
 
     def analyze_engagement_factors(self, comparison_results):
         """Use LLM to analyze factors affecting engagement differences."""
-        analysis_prompt = self._create_analysis_prompt(comparison_results)
+        prompt = f"""
+        Analyze the following landing page comparison data and identify key factors affecting engagement:
+        {json.dumps(comparison_results, indent=2)}
+        
+        Please provide insights on:
+        1. Key differences between high and low performing pages
+        2. Specific elements that contribute to higher engagement
+        3. Recommendations for improvement
+        
+        Format the response as a JSON object with these keys: 
+        'key_differences', 'success_factors', 'recommendations'
+        """
         
         response = self.client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are an expert in web analytics and user engagement analysis."},
-                {"role": "user", "content": analysis_prompt}
+                {"role": "system", "content": "You are an expert in web analytics and user engagement."},
+                {"role": "user", "content": prompt}
             ],
             temperature=0.7,
             max_tokens=1000
