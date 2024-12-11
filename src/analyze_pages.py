@@ -1,42 +1,36 @@
 from landing_page_analyzer import LandingPageAnalyzer
+import json
 
 def main():
-    # Initialize the analyzer (make sure to set OPENAI_API_KEY in .env file)
+    # Initialize the analyzer
     analyzer = LandingPageAnalyzer()
     
-    # Example pages to analyze
+    # Example landing pages to compare
     pages_data = [
         {
-            'url': 'https://www.lovesac.com/sacs',
-            'engagement': 0.55,  # engagement metric (e.g., conversion rate)
-            'content': None
+            'url': 'https://www.example.com',
+            'content': analyzer.fetch_page_content('https://www.example.com'),
+            'engagement': 100  # Example engagement metric
         },
         {
-            'url': 'https://www.lovesac.com/sactionals',
-            'engagement': 0.47,
-            'content': None
-        },
-        {
-            'url': 'https://www.lovesac.com/learn-about-sactionals',
-            'engagement': 0.15,
-            'content': None
+            'url': 'https://www.python.org',
+            'content': analyzer.fetch_page_content('https://www.python.org'),
+            'engagement': 150  # Example engagement metric
         }
     ]
     
-    # Fetch content for each page
-    for page in pages_data:
-        page['content'] = analyzer.fetch_page_content(page['url'])
-    
-    # Compare pages
+    # Compare the pages
     comparison_results = analyzer.compare_pages(pages_data)
     
     # Analyze engagement factors
     analysis = analyzer.analyze_engagement_factors(comparison_results)
     
     # Print results
-    print("\nEngagement Analysis Results:")
-    print("=" * 50)
-    print(analysis)
+    print("\nComparison Results:")
+    print(json.dumps(comparison_results, indent=2))
+    
+    print("\nEngagement Analysis:")
+    print(json.dumps(analysis, indent=2))
 
 if __name__ == "__main__":
     main()

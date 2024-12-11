@@ -1,7 +1,7 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-from openai import OpenAI
+from anthropic import Anthropic
 from dotenv import load_dotenv
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -9,11 +9,10 @@ from difflib import SequenceMatcher
 import json
 
 class LandingPageAnalyzer:
-    def __init__(self, api_key=None):
-        """Initialize the analyzer with OpenAI API key."""
+    def __init__(self):
+        """Initialize the analyzer."""
         load_dotenv()
-        self.api_key = api_key or os.getenv('OPENAI_API_KEY')
-        self.client = OpenAI(api_key=self.api_key, base_url="https://api.openai.com/v1")
+        self.client = Anthropic()  # Will automatically use ANTHROPIC_API_KEY from environment
         
     def fetch_page_content(self, url):
         """Fetch and parse landing page content."""
@@ -85,11 +84,11 @@ class LandingPageAnalyzer:
             'unique_to_second': list(set(list2) - set(list1))
         }
 
-    def analyze_engagement_factors(self, comparison_results):
-        """Use LLM to analyze factors affecting engagement differences."""
+    def analyze_engagement_factors(self, comparison_data):
+        """Analyze engagement factors using Claude."""
         prompt = f"""
         Analyze the following landing page comparison data and identify key factors affecting engagement:
-        {json.dumps(comparison_results, indent=2)}
+        {json.dumps(comparison_data, indent=2)}
         
         Please provide insights on:
         1. Key differences between high and low performing pages
@@ -100,17 +99,22 @@ class LandingPageAnalyzer:
         'key_differences', 'success_factors', 'recommendations'
         """
         
-        response = self.client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are an expert in web analytics and user engagement."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=1000
+        response = self.client.messages.create(
+            model="claude-3-opus-20240229",
+            max_tokens=1000,
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }]
         )
         
-        return response.choices[0].message.content
+        try:
+            return json.loads(response.content[0].text)
+        except (json.JSONDecodeError, AttributeError, IndexError) as e:
+            return {
+                "error": f"Failed to parse response: {str(e)}",
+                "raw_response": response.content[0].text if response.content else "No response"
+            }
 
     def _create_analysis_prompt(self, comparison_results):
         """Create a detailed prompt for the LLM analysis."""
