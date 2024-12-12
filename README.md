@@ -1,34 +1,54 @@
-# Landing Page Engagement Analyzer
+# Engagement Insights
 
-This project uses LLM technology to analyze and compare landing pages from the same domain to understand engagement differences.
+A tool for analyzing and comparing landing page engagement metrics using content analysis and AI-powered insights.
 
 ## Features
 
-- Fetches and parses landing page content
-- Compares multiple landing pages using various metrics
-- Analyzes engagement differences using GPT-4
-- Provides actionable insights for improvement
+- Fetches and analyzes content from multiple landing pages
+- Compares page content, structure, and engagement metrics
+- Provides AI-powered insights using Claude API
+- Supports analysis of any number of pages simultaneously
+- Calculates content similarity and key differences between pages
 
-## Setup
+## Installation
 
-1. Install dependencies:
+1. Clone the repository:
 ```bash
-pip install -r requirements.txt
+git clone <repository-url>
+cd engagement-insights
 ```
 
-2. Create a `.env` file in the project root and add your OpenAI API key:
+2. Install dependencies:
+```bash
+python3 -m pip install -r requirements.txt
 ```
-OPENAI_API_KEY=your_api_key_here
+
+3. Create a `.env` file in the project root and add your Anthropic API key:
+```
+ANTHROPIC_API_KEY=your_anthropic_key_here
 ```
 
 ## Usage
 
-1. Modify the `analyze_pages.py` script with your landing page URLs and engagement metrics.
+The analyzer can run in two modes:
 
-2. Run the analysis:
-```bash
-python analyze_pages.py
+1. **Basic Mode** (No API key required):
+```python
+analyzer = LandingPageAnalyzer(use_ai=False)  # Default setting
 ```
+This mode provides:
+- Content similarity analysis
+- Statistical comparisons
+- Basic engagement metrics
+
+2. **AI-Powered Mode** (Requires Anthropic API key):
+```python
+analyzer = LandingPageAnalyzer(use_ai=True)
+```
+This adds:
+- AI-powered insights
+- Detailed recommendations
+- Success factor analysis
 
 ## How it Works
 
@@ -36,11 +56,12 @@ The analyzer:
 1. Fetches content from specified landing pages
 2. Extracts key features (headings, content, meta descriptions, etc.)
 3. Calculates similarity scores between pages
-4. Uses GPT-4 to analyze engagement differences
+4. Uses Claude to analyze engagement differences
 5. Provides detailed insights and recommendations
 
 ## Requirements
 
 - Python 3.8+
-- OpenAI API key
+- Anthropic API key
 - Internet connection for fetching pages and API access
+- Required packages (see requirements.txt)

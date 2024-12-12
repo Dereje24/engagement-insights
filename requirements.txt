@@ -1,6 +1,9 @@
+# Required dependencies
 beautifulsoup4
 requests
-anthropic
 python-dotenv
 pandas
 scikit-learn
+
+# Optional: Only needed if use_ai=True
+# anthropic

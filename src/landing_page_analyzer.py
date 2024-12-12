@@ -9,10 +9,12 @@ from difflib import SequenceMatcher
 import json
 
 class LandingPageAnalyzer:
-    def __init__(self):
+    def __init__(self, use_ai=False):
         """Initialize the analyzer."""
         load_dotenv()
-        self.client = Anthropic()  # Will automatically use ANTHROPIC_API_KEY from environment
+        self.use_ai = use_ai
+        if use_ai:
+            self.client = Anthropic()  # Only initialize if AI analysis is needed
         
     def fetch_page_content(self, url):
         """Fetch and parse landing page content."""
@@ -85,7 +87,17 @@ class LandingPageAnalyzer:
         }
 
     def analyze_engagement_factors(self, comparison_data):
-        """Analyze engagement factors using Claude."""
+        """Analyze engagement factors."""
+        if not self.use_ai:
+            return {
+                "notice": "AI analysis disabled. Only statistical comparisons available.",
+                "statistical_analysis": {
+                    "content_similarities": [c["content_similarity"] for c in comparison_data],
+                    "engagement_differences": [c["engagement_difference"] for c in comparison_data],
+                    "key_differences": [c["key_differences"] for c in comparison_data]
+                }
+            }
+            
         prompt = f"""
         Analyze the following landing page comparison data and identify key factors affecting engagement:
         {json.dumps(comparison_data, indent=2)}
